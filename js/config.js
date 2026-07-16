@@ -29,7 +29,7 @@ window.CARD_CONFIG = Object.freeze({
     phoneDisplay: "(215) 907-7587",
     phoneHref: "+12159077587",
     smsHref: "+12159077587",
-    email: "hello.placeholder@example.com",
+    email: "msgmobility@gmail.com",
     websiteUrl: "https://www.mobilityplus.com/pennsylvania/norristown/",
     logo: {
       src: "assets/images/logo.png",

@@ -6,7 +6,7 @@
   representative details in index.html or app.js.
 */
 window.CARD_CONFIG = Object.freeze({
-  isPlaceholder: true,
+  isPlaceholder: false,
   placeholderNotice:
     "Fictional placeholder information only. Replace all fields in js/config.js before launch.",
 

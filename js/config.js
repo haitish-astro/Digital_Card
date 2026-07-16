@@ -69,9 +69,9 @@ window.CARD_CONFIG = Object.freeze({
 
   // vCard output is generated only from this configuration.
   vCard: {
-    fileName: "mobility-plus-contact.vcf",
-    organization: "",
-    note:
-      "Fictional placeholder contact generated from the static digital business card."
+  fileName: "mobility-plus-contact.vcf",
+  organization: "Mobility Plus - Norristown, PA",
+  contactName: "Mobility Plus",
+  note: "Mobility Plus digital business card."
   }
 });

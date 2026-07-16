@@ -6,8 +6,15 @@ HTML, CSS, and vanilla JavaScript and is intended for GitHub Pages.
 ## Edit Card Information
 
 Edit `js/config.js` only. Replace placeholder values for the representative,
-company, phone, email, website, address, services, public card URL, logo, and
+company, phone, email, website, address, services, `publicUrl`, logo, and
 photo. Public visitors cannot edit this information from the website.
+
+The `publicUrl` value is the exact permanent GitHub Pages URL used by the QR
+code, Copy Link, and Share Card features. Keep it free of tracking parameters
+and temporary session links.
+
+The QR code is generated locally in the browser by `js/app.js`. No external
+QR-code API, paid service, backend, or QR-code library is used.
 
 ## Preview Locally
 
@@ -32,5 +39,5 @@ Then open `http://127.0.0.1:4175/`.
 Expected public URL:
 
 ```text
-https://haitish-astro.github.io/mobility-plus-digital-card/
+https://haitish-astro.github.io/Digital_Card/
 ```

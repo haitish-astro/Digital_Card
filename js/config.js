@@ -10,6 +10,9 @@ window.CARD_CONFIG = Object.freeze({
   placeholderNotice:
     "Fictional placeholder information only. Replace all fields in js/config.js before launch.",
 
+  // Exact live public GitHub Pages URL used by QR Code, Copy Link, and Share Card.
+  publicUrl: "https://haitish-astro.github.io/Digital_Card/",
+
   // Replace this section with approved public company information.
   company: {
     name: "Mobility Plus - Norristown, PA",
@@ -28,7 +31,6 @@ window.CARD_CONFIG = Object.freeze({
     smsHref: "+12159077587",
     email: "hello.placeholder@example.com",
     websiteUrl: "https://www.mobilityplus.com/pennsylvania/norristown/",
-    publicCardUrl: "https://haitish-astro.github.io/mobility-plus-digital-card/",
     logo: {
       src: "assets/images/logo-placeholder.svg",
       alt: "Fictional Mobility Plus Demo logo placeholder"
@@ -57,7 +59,7 @@ window.CARD_CONFIG = Object.freeze({
     }
   },
 
-  // Keep this target aligned with the deployed GitHub Pages URL.
+  // Public sharing labels. The actual shared URL comes from publicUrl above.
   card: {
     shareTitle: "",
     shareText:

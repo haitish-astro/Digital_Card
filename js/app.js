@@ -15,6 +15,7 @@
   var qrReturn = document.getElementById("qr-return");
   var statusMessage = document.getElementById("status-message");
   var statusTimer = 0;
+  var lastFocusedElement = null;
 
   renderCard(config);
   bindDialog();
@@ -351,7 +352,7 @@
   function copyCardLink(url) {
     copyText(url)
       .then(function () {
-        setStatus("Card link copied.", true);
+        setStatus("Link copied", true);
       })
       .catch(function () {
         setStatus("Copy was not available in this browser.", true);
@@ -391,8 +392,14 @@
     var output = document.getElementById("qr-output");
     var urlText = document.getElementById("qr-url");
 
+    setText("qr-title", cardConfig.company.name);
     output.replaceChildren(createQrSvg(target));
     urlText.textContent = target;
+    lastFocusedElement =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+    document.body.classList.add("qr-open");
 
     if (qrDialog && typeof qrDialog.showModal === "function") {
       qrDialog.showModal();
@@ -807,18 +814,36 @@
         copyCardLink(getCardUrl(config));
       });
     }
+
+    qrDialog.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closeQrDialog();
+      }
+    });
+
+    qrDialog.addEventListener("close", handleQrDialogClosed);
   }
 
   function closeQrDialog() {
     if (!qrDialog) {
       return;
     }
+    if (typeof qrDialog.close === "function" && qrDialog.open) {
+      qrDialog.close();
+    } else {
+      qrDialog.removeAttribute("open");
+      handleQrDialogClosed();
+    }
+  }
 
-      if (typeof qrDialog.close === "function") {
-        qrDialog.close();
-      } else {
-        qrDialog.removeAttribute("open");
-      }
+  function handleQrDialogClosed() {
+    document.body.classList.remove("qr-open");
+
+    if (lastFocusedElement && document.contains(lastFocusedElement)) {
+      lastFocusedElement.focus();
+    }
+
+    lastFocusedElement = null;
   }
 
   function setImage(id, imageConfig) {
@@ -866,7 +891,7 @@
   }
 
   function getCardUrl(cardConfig) {
-    return cardConfig.company.publicCardUrl || window.location.href;
+    return cardConfig.publicUrl || window.location.href;
   }
 
   function getAddressDisplay(address) {

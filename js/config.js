@@ -32,7 +32,7 @@ window.CARD_CONFIG = Object.freeze({
     email: "hello.placeholder@example.com",
     websiteUrl: "https://www.mobilityplus.com/pennsylvania/norristown/",
     logo: {
-      src: "assets/images/logo-placeholder.svg",
+      src: "assets/images/logo.png",
       alt: "Fictional Mobility Plus Demo logo placeholder"
     },
     address: {
@@ -54,7 +54,7 @@ window.CARD_CONFIG = Object.freeze({
     lastName: "Gandhi",
     title: "Co-Partner / Lead Tech",
     photo: {
-      src: "assets/images/representative-placeholder.svg",
+      src: "assets/images/Vishal.png",
       alt: "Fictional representative photo placeholder"
     }
   },

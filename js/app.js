@@ -13,12 +13,18 @@
   var qrShare = document.getElementById("qr-share");
   var qrCopy = document.getElementById("qr-copy");
   var qrReturn = document.getElementById("qr-return");
+  var homeDialog = document.getElementById("home-dialog");
+  var homeClose = document.getElementById("home-close");
+  var homeCopy = document.getElementById("home-copy");
+  var homeReturn = document.getElementById("home-return");
   var statusMessage = document.getElementById("status-message");
   var statusTimer = 0;
   var lastFocusedElement = null;
+  var deferredInstallPrompt = null;
 
   renderCard(config);
-  bindDialog();
+  bindDialogs();
+  bindInstallPrompt();
 
   function renderCard(cardConfig) {
     setDocumentMeta(cardConfig);
@@ -175,6 +181,14 @@
       },
       {
         kind: "button",
+        label: "Add to Home Screen",
+        detail: "Save phone shortcut",
+        action: function () {
+          handleHomeScreenAction(cardConfig);
+        }
+      },
+      {
+        kind: "button",
         label: "Share Card",
         detail: "Send public link",
         action: function () {
@@ -260,19 +274,22 @@
     var company = cardConfig.company;
     var representative = cardConfig.representative;
     var address = company.address || {};
+    var vCardName = getVCardContactName(cardConfig);
+    var nameParts = getVCardNameParts(cardConfig);
+    var title = getVCardTitle(cardConfig);
     var lines = [
       "BEGIN:VCARD",
       "VERSION:3.0",
       "N:" +
-        escapeVCard(representative.lastName) +
+        escapeVCard(nameParts.lastName) +
         ";" +
-        escapeVCard(representative.firstName) +
+        escapeVCard(nameParts.firstName) +
         ";;;",
-      "FN:" + escapeVCard(representative.fullName),
-      "ORG:" + escapeVCard(cardConfig.vCard.organization || company.name),
-      "TITLE:" + escapeVCard(representative.title)
+      "FN:" + escapeVCard(vCardName),
+      "ORG:" + escapeVCard(cardConfig.vCard.organization || company.name)
     ];
 
+    addVCardLine(lines, "TITLE", title);
     addVCardLine(lines, "TEL;TYPE=WORK,VOICE", company.phoneHref);
     addVCardLine(lines, "EMAIL;TYPE=WORK", company.email);
     addVCardLine(lines, "URL", company.websiteUrl);
@@ -296,6 +313,38 @@
     lines.push("END:VCARD");
 
     return lines.map(foldVCardLine).join("\r\n") + "\r\n";
+  }
+
+  function getVCardContactName(cardConfig) {
+    if (hasText(cardConfig.vCard.contactName)) {
+      return cardConfig.vCard.contactName;
+    }
+
+    return cardConfig.representative.fullName || cardConfig.company.name;
+  }
+
+  function getVCardNameParts(cardConfig) {
+    if (hasText(cardConfig.vCard.contactName)) {
+      return {
+        firstName: "",
+        lastName: cardConfig.vCard.contactName
+      };
+    }
+
+    return {
+      firstName: cardConfig.representative.firstName,
+      lastName: cardConfig.representative.lastName
+    };
+  }
+
+  function getVCardTitle(cardConfig) {
+    if (hasText(cardConfig.vCard.title)) {
+      return cardConfig.vCard.title;
+    }
+
+    return hasText(cardConfig.vCard.contactName)
+      ? ""
+      : cardConfig.representative.title;
   }
 
   function addVCardLine(lines, field, value) {
@@ -395,10 +444,7 @@
     setText("qr-title", cardConfig.company.name);
     output.replaceChildren(createQrSvg(target));
     urlText.textContent = target;
-    lastFocusedElement =
-      document.activeElement instanceof HTMLElement
-        ? document.activeElement
-        : null;
+    rememberFocus();
     document.body.classList.add("qr-open");
 
     if (qrDialog && typeof qrDialog.showModal === "function") {
@@ -407,6 +453,42 @@
     } else if (qrDialog) {
       qrDialog.setAttribute("open", "");
       qrClose.focus();
+    }
+  }
+
+  function handleHomeScreenAction(cardConfig) {
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      deferredInstallPrompt.userChoice
+        .then(function (choice) {
+          if (choice.outcome === "accepted") {
+            setStatus("Home screen shortcut added.", true);
+          } else {
+            showHomeScreenHelp(cardConfig);
+          }
+
+          deferredInstallPrompt = null;
+        })
+        .catch(function () {
+          showHomeScreenHelp(cardConfig);
+        });
+      return;
+    }
+
+    showHomeScreenHelp(cardConfig);
+  }
+
+  function showHomeScreenHelp(cardConfig) {
+    setText("home-url", getCardUrl(cardConfig));
+    rememberFocus();
+    document.body.classList.add("home-open");
+
+    if (homeDialog && typeof homeDialog.showModal === "function") {
+      homeDialog.showModal();
+      homeClose.focus();
+    } else if (homeDialog) {
+      homeDialog.setAttribute("open", "");
+      homeClose.focus();
     }
   }
 
@@ -792,7 +874,7 @@
     return y >= 0 && y < matrix.length && x >= 0 && x < matrix.length;
   }
 
-  function bindDialog() {
+  function bindDialogs() {
     if (!qrClose || !qrDialog) {
       return;
     }
@@ -822,6 +904,30 @@
     });
 
     qrDialog.addEventListener("close", handleQrDialogClosed);
+
+    if (!homeClose || !homeDialog) {
+      return;
+    }
+
+    homeClose.addEventListener("click", closeHomeDialog);
+
+    if (homeReturn) {
+      homeReturn.addEventListener("click", closeHomeDialog);
+    }
+
+    if (homeCopy) {
+      homeCopy.addEventListener("click", function () {
+        copyCardLink(getCardUrl(config));
+      });
+    }
+
+    homeDialog.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closeHomeDialog();
+      }
+    });
+
+    homeDialog.addEventListener("close", handleHomeDialogClosed);
   }
 
   function closeQrDialog() {
@@ -838,12 +944,52 @@
 
   function handleQrDialogClosed() {
     document.body.classList.remove("qr-open");
+    restoreFocus();
+  }
 
+  function closeHomeDialog() {
+    if (!homeDialog) {
+      return;
+    }
+
+    if (typeof homeDialog.close === "function" && homeDialog.open) {
+      homeDialog.close();
+    } else {
+      homeDialog.removeAttribute("open");
+      handleHomeDialogClosed();
+    }
+  }
+
+  function handleHomeDialogClosed() {
+    document.body.classList.remove("home-open");
+    restoreFocus();
+  }
+
+  function rememberFocus() {
+    lastFocusedElement =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+  }
+
+  function restoreFocus() {
     if (lastFocusedElement && document.contains(lastFocusedElement)) {
       lastFocusedElement.focus();
     }
 
     lastFocusedElement = null;
+  }
+
+  function bindInstallPrompt() {
+    window.addEventListener("beforeinstallprompt", function (event) {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+    });
+
+    window.addEventListener("appinstalled", function () {
+      deferredInstallPrompt = null;
+      setStatus("Home screen shortcut added.", true);
+    });
   }
 
   function setImage(id, imageConfig) {

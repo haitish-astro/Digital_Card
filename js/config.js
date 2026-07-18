@@ -1,14 +1,13 @@
 /*
   Mobility Plus digital business card configuration.
 
-  Replace every fictional placeholder below with approved public Mobility Plus
-  business information before launch. Do not put official company or
-  representative details in index.html or app.js.
+  Keep approved public Mobility Plus business information here. Do not put
+  official company or representative details in index.html or app.js.
 */
 window.CARD_CONFIG = Object.freeze({
   isPlaceholder: false,
   placeholderNotice:
-    "Fictional placeholder information only. Replace all fields in js/config.js before launch.",
+    "Placeholder information only. Replace all fields in js/config.js before launch.",
 
   // Exact live public GitHub Pages URL used by QR Code, Copy Link, and Share Card.
   publicUrl: "https://haitish-astro.github.io/Digital_Card/",
@@ -18,7 +17,7 @@ window.CARD_CONFIG = Object.freeze({
     name: "Mobility Plus - Norristown, PA",
     tagline: "Digital Business Card",
     description:
-      "This fictional card represents a local mobility equipment provider. Replace this copy with approved public Mobility Plus messaging before launch.",
+      "Mobility Plus - Norristown, PA digital business card for store contact details, mobility equipment support, directions, and sharing.",
     serviceArea: "Norristown, PA. & nearby communities",
     services: [
       "Mobility scooter consultations",
@@ -33,7 +32,7 @@ window.CARD_CONFIG = Object.freeze({
     websiteUrl: "https://www.mobilityplus.com/pennsylvania/norristown/",
     logo: {
       src: "assets/images/logo.png",
-      alt: "Fictional Mobility Plus Demo logo placeholder"
+      alt: "Mobility Plus logo"
     },
     address: {
       display: "2123 W Main St, Norristown, PA 19403",
@@ -55,23 +54,23 @@ window.CARD_CONFIG = Object.freeze({
     title: "Co-Partner / Lead Tech",
     photo: {
       src: "assets/images/Vishal.png",
-      alt: "Fictional representative photo placeholder"
+      alt: "Vishal Gandhi"
     }
   },
 
   // Public sharing labels. The actual shared URL comes from publicUrl above.
   card: {
     shareTitle: "",
-    shareText:
-      "Fictional placeholder digital business card. Replace before launch.",
+    shareText: "Mobility Plus - Norristown, PA digital business card.",
     qrLabel: "Permanent public card link"
   },
 
   // vCard output is generated only from this configuration.
   vCard: {
-  fileName: "mobility-plus-contact.vcf",
-  organization: "Mobility Plus - Norristown, PA",
-  contactName: "Mobility Plus",
-  note: "Mobility Plus digital business card."
+    fileName: "mobility-plus-contact.vcf",
+    organization: "Mobility Plus - Norristown, PA",
+    contactName: "Mobility Plus",
+    title: "",
+    note: "Mobility Plus digital business card."
   }
 });

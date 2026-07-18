@@ -5,8 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Static public digital business card.">
     <meta name="theme-color" content="#0f4f3f">
+    <meta name="apple-mobile-web-app-title" content="Mobility Plus">
+    <meta name="application-name" content="Mobility Plus">
     <title>Digital Business Card</title>
     <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
     <link rel="stylesheet" href="css/styles.css">
     <script src="js/config.js" defer></script>
     <script src="js/app.js" defer></script>
@@ -76,6 +80,37 @@
           <button class="qr-action" id="qr-share" type="button">Share Card</button>
           <button class="qr-action" id="qr-copy" type="button">Copy Link</button>
           <button class="qr-action qr-action-secondary" id="qr-return" type="button">Return to Card</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="home-dialog" id="home-dialog" aria-labelledby="home-title" aria-describedby="home-description">
+      <div class="home-dialog-content">
+        <button class="dialog-close" id="home-close" type="button">Return to Card</button>
+        <h2 id="home-title">Add to Home Screen</h2>
+        <p class="home-description" id="home-description">Save this digital card as a phone shortcut.</p>
+        <p class="home-url" id="home-url"></p>
+        <div class="home-instructions">
+          <section>
+            <h3>iPhone</h3>
+            <ol>
+              <li>Open this card in Safari.</li>
+              <li>Tap the Share button.</li>
+              <li>Choose Add to Home Screen, then tap Add.</li>
+            </ol>
+          </section>
+          <section>
+            <h3>Android</h3>
+            <ol>
+              <li>Open this card in Chrome.</li>
+              <li>Tap the browser menu.</li>
+              <li>Choose Add to Home screen or Install app.</li>
+            </ol>
+          </section>
+        </div>
+        <div class="home-actions" aria-label="Home screen actions">
+          <button class="home-action" id="home-copy" type="button">Copy Link</button>
+          <button class="home-action home-action-secondary" id="home-return" type="button">Return to Card</button>
         </div>
       </div>
     </dialog>

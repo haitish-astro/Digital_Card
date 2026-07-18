@@ -16,6 +16,15 @@ and temporary session links.
 The QR code is generated locally in the browser by `js/app.js`. No external
 QR-code API, paid service, backend, or QR-code library is used.
 
+The Add to Home Screen button keeps the site static. iPhone Safari does not let
+websites trigger Add to Home Screen directly, so the button shows the required
+manual steps. Android browsers may show a native install prompt when available;
+otherwise the same button shows manual shortcut instructions.
+
+Home-screen icons are committed under `assets/icons/`, and the static
+`site.webmanifest` uses relative paths. There is no service worker or offline
+cache layer.
+
 ## Preview Locally
 
 Open `index.html` directly in a browser, or run a simple static server from the
